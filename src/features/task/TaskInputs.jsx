@@ -5,6 +5,7 @@ import styles from './TaskInputs.module.css';
 import {
     fetchAsyncCreate,
     fetchAsyncUpdate,
+    createTask,
     editTask,
     selectEditedTask,
 } from './taskSlice';
@@ -16,13 +17,15 @@ const TaskInputs = () => {
 
     const handleInputChange = (e) => {
         editedTask.id === 0
+            // ? dispatch(editTask({id: 0, title: e.target.value}))
             ? dispatch(editTask({id: 0, title: e.target.value}))
             : dispatch(editTask({id: editedTask.id, title: e.target.value}));
     };
 
     const createClicked = () => {
         dispatch(fetchAsyncCreate(editedTask));
-        dispatch(editTask({id: 0, title: ""}));
+        // dispatch(editTask({id: 0, title: ""}));
+        dispatch(createTask({title: "", deleted: 0}));
     };
 
     const updateClicked = () => {

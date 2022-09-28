@@ -22,7 +22,7 @@ export const fetchAsyncCreate = createAsyncThunk("task/post", async (task) => {
 });
 
 export const fetchAsyncUpdate = createAsyncThunk("task/put", async (task) => {
-    const res = await axios.put(`${apiUrl}put/tasks.json`, task, {
+    const res = await axios.put(`${apiUrl}put/tasks/${task}.json`, task, {
         headers: {
             "Content-Type": "application/json",
         },
@@ -31,12 +31,12 @@ export const fetchAsyncUpdate = createAsyncThunk("task/put", async (task) => {
 });
 
 export const fetchAsyncDelete = createAsyncThunk("task/delete", async (task) => {
-    const res = await axios.put(`${apiUrl}delete/tasks.json`, task, {
+    const res = await axios.put(`${apiUrl}delete/tasks/${task}.json`, task, {
         headers: {
             "Content-Type": "application/json",
         },
     });
-    return res.data.task;
+    return res.data.task.id;
 });
 
 const initialState = {
@@ -48,17 +48,20 @@ const initialState = {
             modified: "",
         },
     ],
-    editedTask: {
-        // id: 0,
+    createdTask: {
         title: "",
-        created: "",
-        modified: "",
+        deleted: 0,
+    },
+    editedTask: {
+        id: 0,
+        title: "",
     },
     selectedTask: {
-        // id: 0,
+        id: 0,
         title: "",
-        created: "",
-        modified: "",
+    },
+    deletedTask: {
+        id: 0,
     }
 };
 
@@ -66,6 +69,9 @@ const taslSlice = createSlice({
     name: "task",
     initialState,
     reducers: {
+        createTask(state, action) {
+            state.createdTask = action.payload;
+        },
         editTask(state, action) {
             state.editedTask = action.payload;
         },
@@ -100,18 +106,15 @@ const taslSlice = createSlice({
             return {
                 ...state,
                 tasks: state.tasks.filter((t) => t.id !== action.payload),
-                selectedTask: {
+                deletedTask: {
                     id: 0,
-                    title: "",
-                    created: "",
-                    modified: "",
                 },
             };
         });
     },
 });
 
-export const { editTask, selectTask } = taslSlice.actions;
+export const { createTask, editTask, selectTask } = taslSlice.actions;
 
 export const selectSelectedTask = (state) => state.task.selectedTask;
 export const selectEditedTask = (state) => state.task.editedTask;
