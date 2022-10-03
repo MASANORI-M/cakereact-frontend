@@ -87,7 +87,6 @@ const taslSlice = createSlice({
             };
         });
         builder.addCase(fetchAsyncCreate.fulfilled, (state, action) => {
-            console.log(action.payload);
             return {
                 ...state,
                 tasks: [action.payload, ...state.tasks],
@@ -117,6 +116,7 @@ const taslSlice = createSlice({
 export const { createTask, editTask, selectTask } = taslSlice.actions;
 
 export const selectSelectedTask = (state) => state.task.selectedTask;
+export const selectCreatedTask = (state) => state.task.createdTask;
 export const selectEditedTask = (state) => state.task.editedTask;
 export const selectTasks = (state) => state.task.tasks;
 
