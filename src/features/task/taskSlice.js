@@ -18,16 +18,16 @@ export const fetchAsyncCreate = createAsyncThunk("task/post", async (task) => {
             "Content-Type": "application/json",
         },
     });
-    return res.data.task;
+    return res.data.tasks;
 });
 
 export const fetchAsyncUpdate = createAsyncThunk("task/put", async (task) => {
-    const res = await axios.put(`${apiUrl}put/tasks/${task}.json`, task, {
+    const res = await axios.put(`${apiUrl}put/tasks/${task.id}.json`, task, {
         headers: {
             "Content-Type": "application/json",
         },
     });
-    return res.data.task;
+    return res.data.tasks;
 });
 
 export const fetchAsyncDelete = createAsyncThunk("task/delete", async (task) => {
@@ -36,7 +36,7 @@ export const fetchAsyncDelete = createAsyncThunk("task/delete", async (task) => 
             "Content-Type": "application/json",
         },
     });
-    return res.data.task.id;
+    return res.data.tasks;
 });
 
 const initialState = {
@@ -62,6 +62,7 @@ const initialState = {
     },
     deletedTask: {
         id: 0,
+        deleted: 1,
     }
 };
 
@@ -96,7 +97,7 @@ const taslSlice = createSlice({
             return {
                 ...state,
                 tasks: state.tasks.map((t) =>
-                    t.id !== action.payload.id ? action.payload : t
+                    t.id === action.payload.id ? action.payload : t
                 ),
                 selectedTask: action.payload,
             };
@@ -104,10 +105,14 @@ const taslSlice = createSlice({
         builder.addCase(fetchAsyncDelete.fulfilled, (state, action) => {
             return {
                 ...state,
-                tasks: state.tasks.filter((t) => t.id !== action.payload),
-                deletedTask: {
-                    id: 0,
-                },
+                // tasks: state.tasks.filter((t) => t.id !== action.payload),
+                // deletedTask: {
+                //     id: 0,
+                // },
+                tasks: state.tasks.map((t) =>
+                    t.id === action.payload.id ? action.payload : t
+                ),
+                deletedTask: action.payload,
             };
         });
     },
